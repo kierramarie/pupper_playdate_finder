@@ -18,6 +18,7 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 - chat accepted
 - user logged in
 - user logged out
+- feed updated
 
 ### Domain Commands
 - Create account
@@ -35,9 +36,21 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 - Logout
 
 ### Entities
-- User
-- chat
-
+#### user
+- id
+- parent name
+- pet name
+- bio
+- location
+- username
+- password
+- email
+- list of tags
+#### chat
+- id
+- list of messages
 ### Value Objects
 - picture
 - message
+- auth token
+- attribute tag (attributes of the pet the user wants to be compared to other pets)
