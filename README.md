@@ -14,7 +14,7 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 - disliked other user
 - message sent
 - message deleted
-- chat rejected
+- chat declined
 - chat accepted
 - user logged in
 - user logged out
