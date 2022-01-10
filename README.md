@@ -49,8 +49,25 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 #### chat
 - id
 - list of messages
+
 ### Value Objects
-- picture
-- message
-- auth token
-- attribute tag (attributes of the pet the user wants to be compared to other pets)
+#### picture
+#### message
+#### auth token
+#### attribute tag (attributes of the pet the user wants to be compared to other pets)
+
+## REST API Design
+
+### REST Endpoints
+| Query | URL Fragment | HTTP Method | Path Parameters |
+| ---   | ---          | ---         | ---             |
+| Create account | /accounts | POST | |
+| Update account | /accounts/{id} | PUT | id | 
+| Delete account | /accounts/{id} | DELETE | id |
+| Add profile picture | /accounts/{id}/pics | POST | id |
+| Delete profile pictures | /accounts/{id}/pics/{pic_id} | DELETE | id, pic_id |
+| login | /accounts/login | GET | |
+| logout | /accounts/logout | GET | |
+| Create Chat | /chats | POST | |
+| Update Chat | /chats/{id} | PUT | id |
+| Delete message | /chats/{id} | DELETE | id |
