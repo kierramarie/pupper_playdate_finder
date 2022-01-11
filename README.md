@@ -88,13 +88,12 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
     "username":"doglover1234",
     "password":"agreatpassword",
     "email":"doglover1234@gmail.com",
-    "tags":
-    {
-        "0":"friendly",
-        "1":"exuberent",
-        "2":"corgi",
-        "3":"energetic"
-    }
+    "tags": [
+        "friendly",
+        "exuberent",
+        "corgi",
+        "energetic"
+    ]
 }
 ```
 #### Add Picture
@@ -118,10 +117,9 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 {
     "chat_id":"1",
     "recipientAccepted":"False",
-    "messages":
-    {
-        "0":"Hello!"
-    }
+    "messages": [
+        "Hello!"
+    ]
 }
 ```
 
