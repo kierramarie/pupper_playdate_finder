@@ -65,8 +65,8 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 | Delete account | /accounts/{id} | DELETE | id | |
 | Add profile picture | /accounts/{id}/pics | POST | id | Add Picture |
 | Delete profile pictures | /accounts/{id}/pics/{pic_id} | DELETE | id, pic_id |
-| login | /accounts/login | GET | | Account Login |
-| logout | /accounts/logout | GET | |
+| login | /accounts/login | PUT | | Account Login |
+| logout | /accounts/logout | PUT | |
 | Create Chat | /chats | POST | | Create Chat |
 | Get Chat | /chats/{chat_id} | GET | chat_id | |
 | Update Chat | /chats/{chat_id} | PUT | chat_id | |
