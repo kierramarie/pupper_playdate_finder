@@ -3,7 +3,388 @@ info:
   title: Puppy Playdate Finder API
   version: v1 
 paths: 
+  /accounts:
+    post:
+      tags:
+        - Accounts
+      summary: create an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object  
+              required: 
+                - username
+                - password
+                - email
+              properties: 
+                id:
+                  type: string
+                  readOnly: true
+                parentName: 
+                  type: string
+                parentBirthday: 
+                  type: string
+                  format: date-time
+                petName: 
+                  type: string
+                bio:
+                  type: string
+                location:
+                  type: string 
+                username: 
+                  type: string
+                password:
+                  type: string
+                  format: password
+                email: 
+                  type: string
+                tags: 
+                  type: array
+                  items:
+                    type: string
+            example:
+              id: asdkfj90d8f09
+              parentName: Sarah Miller
+              parentBirthday: 1/1/1995
+              petName: Luna
+              bio: a cute dog looking for fun friends
+              location: Los Angeles, CA, USA  
+              username: sarahm098
+              password: password123
+              email: sarahm@gmail.com  
+              tags:
+                - cute
+                - collie
+                - energetic
+      responses:
+        201:
+          description: Account created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid request.
+        409:
+          description: Account already exists. 
+  /accounts/{id}:
+    parameters:
+      - $ref: '#/components/parameters/PathId'
+    put:
+      tags:
+        - Accounts
+      summary: update an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object  
+              required: 
+                - username
+                - password
+                - email
+              properties: 
+                id:
+                  type: string
+                  readOnly: true
+                parentName: 
+                  type: string
+                parentBirthday: 
+                  type: string
+                  format: date-time
+                petName: 
+                  type: string
+                bio:
+                  type: string
+                location:
+                  type: string 
+                username: 
+                  type: string
+                password:
+                  type: string
+                  format: password
+                email: 
+                  type: string
+                tags: 
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Successfully updated.
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+    delete:
+      tags:
+        - Accounts
+      summary: delete an account
+      responses:
+        204:
+          description: Account deleted.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+  /accounts/{id}/pics:
+    parameters:
+      - $ref: '#/components/parameters/PathId'
+    post:
+      tags:
+        - Accounts
+      summary: upload a picture
+      requestBody:
+        $ref: '#/components/requestBodies/UploadPicture'
+      responses:
+        201:
+          description: Picture uploaded successfully.
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+        404:
+          description: Profile not found.
+  /accounts/{id}/pics/{pic_id}:
+    parameters:
+      - $ref: '#/components/parameters/PathId'
+      - $ref: '#/components/parameters/PathPicId'
+    delete:
+      tags:
+        - Accounts
+      summary: delete a picture
+      responses:
+        204:
+          description: Picture deleted.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+  /accounts/login:
+    put:
+      tags:
+        - Accounts
+      summary: login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username: 
+                  type: string
+                password:
+                  type: string
+                  format: password
+            example:
+              username: doglover1234
+              password: agreatpassword
+      responses:
+        200:
+          description: Authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid request.
+        403:
+          description: Access denied.
+  /accounts/{id}/logout:
+    parameters:
+      - $ref: '#/components/parameters/PathId'
+    put:
+      tags:
+        - Accounts
+      summary: log a user out
+      responses:
+        200:
+          description: Logged out.
+        403:
+          description: Access denied.
+  /chats:
+    post:
+      tags:
+        - Chats
+      summary: create a chat
+      requestBody:
+        - $ref: '#/components/requestBodies/SetChat'
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+  /chats/{chat_id}:
+    parameters:
+      - $ref: '#/components/parameters/PathChatId'
+    get:
+      tags:
+        - Chats
+      summary: get a specific chat
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+    put:
+      tags:
+        - Chats
+      summary: update a chat
+      requestBody:
+        - $ref: '#/components/requestBodies/SetChat'
+      responses:
+        200:
+          description: Success.
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+    delete:
+      tags:
+        - Chats
+      summary: delete a chat
+      responses:
+        204:
+          description: Chat deleted.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+  /chats/{chat_id}/send:
+    parameters:
+      - $ref: '#/components/parameters/PathChatId'
+    put:
+      tags:
+        - Chats
+      summary: send a message
+      requestBody:
+        $ref: '#/components/requestBodies/SendMessage'
+      responses:
+        200:
+          description: Success.
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
 components: 
   parameters: 
-  schemas: 
-  
+    PathId: 
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    PathChatId: 
+      name: chatId
+      in: path
+      required: true
+      schema:
+        type: string
+    PathPicId:
+      name: picId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBodies: 
+    SetChat:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Chat'
+    SendMessage:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    UploadPicture:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pic'
+  schemas:
+    Pic:
+      type: object 
+      properties: 
+        data:
+          type: string
+          format: binary
+        size:
+          type: number
+        name:
+          type: string
+    User:
+      type: object 
+      properties: 
+        id:
+          type: string
+          readOnly: true
+        parentName: 
+          type: string
+        parentBirthday: 
+          type: string
+          format: date-time
+        petName: 
+          type: string
+        bio:
+          type: string
+        location:
+          type: string 
+        username: 
+          type: string
+        password:
+          type: string
+          format: password
+        email: 
+          type: string
+        tags: 
+          type: array
+          items:
+            type: string
+    Message:
+      type: object 
+      properties: 
+        messageId: 
+          type: string
+          nullable: true
+          readOnly: true
+        message: 
+          type: string
+        receivingUser:
+          type: string
+        sendingUser:
+          type: string
+    Chat:
+      type: object
+      properties:
+        chatId:
+          type: string
+          readOnly: true
+        messages: 
+          type: array 
+          items: 
+            $ref: '#/components/schemas/Message'

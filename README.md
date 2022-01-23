@@ -54,8 +54,6 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 ### Value Objects
 #### picture
 #### message
-#### auth token
-#### attribute tag (attributes of the pet the user wants to be compared to other pets)
 
 ## REST API Design
 
@@ -117,8 +115,17 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 {
     "chat_id":"1",
     "recipientAccepted":"False",
+    "users" : [
+        "doglover1234",
+        "sarahm098"
+    ],
     "messages": [
-        "Hello!"
+        {
+            "messageId":"kljdafoojpp12",
+            "message": "Hello!",
+            "sendingUser": "doglover1234",
+            "receivingUser": "sarahm098"
+        }
     ]
 }
 ```
@@ -126,6 +133,8 @@ This is going to be an app similar to Tinder, except for dog parents trying to f
 #### Send Message
 ```json
 {
-    "message":"Hi, how are you?"
+    "message":"Hi, how are you?",
+    "sendingUser" : "sarahm098",
+    "receivingUser" : "doglover1234"
 }
 ```
