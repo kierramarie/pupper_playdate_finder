@@ -47,7 +47,7 @@ paths:
             example:
               id: asdkfj90d8f09
               parentName: Sarah Miller
-              parentBirthday: 1/1/1995
+              parentBirthday: 1995-01-01
               petName: Luna
               bio: a cute dog looking for fun friends
               location: Los Angeles, CA, USA  
@@ -217,7 +217,11 @@ paths:
         - Chats
       summary: create a chat
       requestBody:
-        - $ref: '#/components/requestBodies/SetChat'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chat'
       responses:
         201:
           description: Success
@@ -252,7 +256,11 @@ paths:
         - Chats
       summary: update a chat
       requestBody:
-        - $ref: '#/components/requestBodies/SetChat'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chat'
       responses:
         200:
           description: Success.
@@ -296,13 +304,13 @@ components:
       schema:
         type: string
     PathChatId: 
-      name: chatId
+      name: chat_id
       in: path
       required: true
       schema:
         type: string
     PathPicId:
-      name: picId
+      name: pic_id
       in: path
       required: true
       schema:
