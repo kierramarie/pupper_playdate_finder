@@ -6,8 +6,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - pupper_playdate_finder',
-    title: 'pupper_playdate_finder',
+    titleTemplate: '%s - pup_playdate_finder',
+    title: 'pup_playdate_finder',
     htmlAttrs: {
       lang: 'en'
     },
@@ -67,6 +67,9 @@ export default {
   },
 
   serverMiddleware: [
-    { path: '/api', handler: '~/api' }
+    { 
+      path: '/api',
+      handler: '~/api/server.js'
+    }
   ]
 }

@@ -17,6 +17,7 @@ app.use((req, res, next) => {
 
 app.use(enforcerMiddleware.init({ baseUrl: '/api' }))
 
+/*
 app.post('/accounts', async (req, res) => {
   const { body, mockStore } = req.enforcer
 
@@ -186,6 +187,7 @@ app.put('/chats/{chat_id}/send', async (req, res) => {
     res.enforcer.send([])
   }
 })
+*/
 
 enforcerMiddleware.on('error', err => {
   console.error(err)

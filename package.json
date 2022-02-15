@@ -1,26 +1,24 @@
 {
-  "name": "pupper_playdate_finder",
+  "name": "pup_playdate_finder",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate",
-    "test": "mocha test",
-    "test:watch": "mocha --watch test"
+    "generate": "nuxt generate"
   },
   "dependencies": {
     "core-js": "^3.19.3",
     "express": "^4.17.2",
-    "nuxt": "^2.2.0",
-    "openapi-enforcer": "^1.16.1",
+    "nuxt": "^2.15.8",
+    "openapi-enforcer": "^1.17.0",
     "openapi-enforcer-middleware": "^2.2.0",
     "vue": "^2.6.14",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "vuetify": "^2.6.1",
-    "webpack": "^5.68.0"
+    "webpack": "^4.46.0"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.12.3",
