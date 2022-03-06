@@ -3,11 +3,13 @@ info:
   title: Puppy Playdate Finder API
   version: v1 
 paths: 
-  /accounts:
+  /users:
+    x-controller: users
     post:
+      x-operation: createUser
       tags:
-        - Accounts
-      summary: create an account
+        - Users
+      summary: create a user's account
       requestBody:
         required: true
         content:
@@ -19,9 +21,6 @@ paths:
                 - password
                 - email
               properties: 
-                id:
-                  type: string
-                  readOnly: true
                 parentName: 
                   type: string
                 parentBirthday: 
@@ -45,7 +44,6 @@ paths:
                   items:
                     type: string
             example:
-              id: asdkfj90d8f09
               parentName: Sarah Miller
               parentBirthday: 1995-01-01
               petName: Luna
@@ -60,22 +58,22 @@ paths:
                 - energetic
       responses:
         201:
-          description: Account created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+          description: User created.
         400:
           description: Invalid request.
         409:
-          description: Account already exists. 
-  /accounts/{id}:
+          description: User already exists. 
+  /users/{userId}:
+    x-controller: users
     parameters:
       - $ref: '#/components/parameters/PathId'
-    put:
+    patch:
+      x-operation: updateUser
       tags:
-        - Accounts
-      summary: update an account
+        - Users
+      security:
+        - cookieAuth: []
+      summary: update a user's account
       requestBody:
         required: true
         content:
@@ -87,7 +85,7 @@ paths:
                 - password
                 - email
               properties: 
-                id:
+                userId:
                   type: string
                   readOnly: true
                 parentName: 
@@ -120,22 +118,27 @@ paths:
         401:
           description: Not authenticated.
     delete:
+      x-operation: deleteUser
       tags:
-        - Accounts
-      summary: delete an account
+        - Users
+      summary: delete a user's account
       responses:
         204:
-          description: Account deleted.
+          description: User deleted.
         401:
           description: Not authenticated.
         403:
           description: Access denied.
-  /accounts/{id}/pics:
+  /users/{userId}/pics:
+    x-controller: users
     parameters:
       - $ref: '#/components/parameters/PathId'
     post:
+      x-operation: uploadPicture
       tags:
-        - Accounts
+        - Users
+      security:
+        - cookieAuth: []
       summary: upload a picture
       requestBody:
         $ref: '#/components/requestBodies/UploadPicture'
@@ -150,13 +153,17 @@ paths:
           description: Access denied.
         404:
           description: Profile not found.
-  /accounts/{id}/pics/{pic_id}:
+  /users/{userId}/pics/{pic_id}:
+    x-controller: users
     parameters:
       - $ref: '#/components/parameters/PathId'
       - $ref: '#/components/parameters/PathPicId'
     delete:
+      x-operation: deletePicture
       tags:
-        - Accounts
+        - Users
+      security:
+        - cookieAuth: []
       summary: delete a picture
       responses:
         204:
@@ -165,10 +172,12 @@ paths:
           description: Not authenticated.
         403:
           description: Access denied.
-  /accounts/login:
+  /authentication/login:
+    x-controller: authentication
     put:
+      x-operation: login
       tags:
-        - Accounts
+        - Authentication
       summary: login a user
       requestBody:
         required: true
@@ -191,20 +200,16 @@ paths:
       responses:
         200:
           description: Authenticated.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
         400:
           description: Invalid request.
         403:
           description: Access denied.
-  /accounts/{id}/logout:
-    parameters:
-      - $ref: '#/components/parameters/PathId'
+  /authentication/logout:
+    x-controller: authentication
     put:
+      x-operation: logout
       tags:
-        - Accounts
+        - Authentication
       summary: log a user out
       responses:
         200:
@@ -215,6 +220,8 @@ paths:
     post:
       tags:
         - Chats
+      security:
+        - cookieAuth: []
       summary: create a chat
       requestBody:
         required: true
@@ -239,6 +246,8 @@ paths:
     get:
       tags:
         - Chats
+      security:
+        - cookieAuth: []
       summary: get a specific chat
       responses:
         200:
@@ -254,6 +263,8 @@ paths:
     put:
       tags:
         - Chats
+      security:
+        - cookieAuth: []
       summary: update a chat
       requestBody:
         required: true
@@ -271,6 +282,8 @@ paths:
     delete:
       tags:
         - Chats
+      security:
+        - cookieAuth: []
       summary: delete a chat
       responses:
         204:
@@ -285,6 +298,8 @@ paths:
     put:
       tags:
         - Chats
+      security:
+        - cookieAuth: []
       summary: send a message
       requestBody:
         $ref: '#/components/requestBodies/SendMessage'
@@ -298,7 +313,7 @@ paths:
 components: 
   parameters: 
     PathId: 
-      name: id
+      name: userId
       in: path
       required: true
       schema:
@@ -334,6 +349,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Pic'
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: todoSessionId 
   schemas:
     Pic:
       type: object 
@@ -348,7 +368,7 @@ components:
     User:
       type: object 
       properties: 
-        id:
+        userId:
           type: string
           readOnly: true
         parentName: 

@@ -30,6 +30,7 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <!--
       <v-btn
         icon
         @click.stop="miniVariant = !miniVariant"
@@ -48,7 +49,9 @@
       >
         <v-icon>mdi-minus</v-icon>
       </v-btn>
+      -->
       <v-toolbar-title v-text="title" />
+      <!--
       <v-spacer />
       <v-btn
         icon
@@ -56,12 +59,14 @@
       >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
+      -->
     </v-app-bar>
     <v-main>
       <v-container>
         <Nuxt />
       </v-container>
     </v-main>
+    <!--
     <v-navigation-drawer
       v-model="rightDrawer"
       :right="right"
@@ -79,6 +84,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    -->
     <v-footer
       :absolute="!fixed"
       app
@@ -111,7 +117,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Vuetify.js'
+      title: 'Pupper Playdate Finder'
     }
   }
 }
