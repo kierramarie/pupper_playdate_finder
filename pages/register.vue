@@ -5,11 +5,27 @@
         <v-col cols="3" md="4">
           <v-text-field v-model="form.username" label="Username"> </v-text-field>
         </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="3" md="4">
           <v-text-field v-model="form.password" label="Password" type="password"> </v-text-field>
         </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="3" md="4">
-          <v-text-field v-model="form.email" :rules="emailRules" label="Email">
+          <v-text-field v-model="form.email" label="Email">
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3" md="4">
+          <v-text-field v-model="form.parentName" label="Your Name">
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3" md="4">
+          <v-text-field v-model="form.parentBirthday" label="Please enter your birthday">
           </v-text-field>
         </v-col>
       </v-row>
@@ -29,8 +45,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: "RegisterPage",
   data() {
@@ -38,7 +52,9 @@ export default {
       form: {
         username: "",
         password: "",
-        email: ""
+        email: "",
+        parentName: "",
+        parentBirthday: ""
       },
       emailRules: [
         v => !!v || 'E-mail is required',
@@ -49,19 +65,12 @@ export default {
   methods: {
       validate () {
         this.$refs.form.validate()
-        let data = {
-          username: this.form.username,
-          password: this.form.password,
-          email: this.form.email
-        }
-        axios.post("/api/users", data)
-          .then(response => this.userId = response.data.id)
-          .catch(error => {
-            this.errorMessage = error.message;
-            console.log(data);
-            console.error("There was an error!", error);
-            console.error(response)
-        });
+        this.$store.commit("register/setUsername", this.form.username);
+        this.$store.commit("register/setPassword", this.form.password);
+        this.$store.commit("register/setEmail", this.form.email);
+        this.$store.commit("register/setParentName", this.form.parentName);
+        this.$store.commit("register/setParentBirthday", this.form.parentBirthday);
+        this.$router.push('/register');
       }
   }
 };
