@@ -110,7 +110,7 @@ export default {
   },
   computed: {
     isLoggedIn () {
-      return this.$store.state.users.user ? true : false
+      return this.$store.state.users.userId != null && this.$store.state.users.userId != "" ? true : false
     }
   }
 }

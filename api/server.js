@@ -109,7 +109,7 @@ app.use((req, res, next) => {
 
 app.use(enforcerMiddleware.route({
 	users: Users(pool),
-	authentication: Authentication(passport)
+	authentication: Authentication(passport, pool)
 }))
 
 // add fallback mocking middleware here

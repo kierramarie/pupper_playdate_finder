@@ -2,24 +2,33 @@ import axios from 'axios';
 
 export const state = () => {
     return {
-        user: getUserFromCookie()
+        userId: getUserFromCookie(),
+        user: {}
     }
 }
 
 export const mutations = {
     setUser (state, user) {
         state.user = user
+    },
+
+    setUserId(state, userId) {
+        state.userId = userId
     }
 }
 
+export const getters = {
+}
+
 export const actions = {
-    async login ({ commit, state }, { username, password }) {
-        const res = await axios.put('/api/authentication/login', {
+    async login ({ commit, dispatch }, { username, password }) {
+        const res = await axios.post('/api/authentication/login', {
             username,
             password
         })
         if (res.status === 200) {
-            commit('setUser', getUserFromCookie())
+            const u = await dispatch('retrieveUser')
+            commit('setUserId', getUserFromCookie())
             this.$router.push('/')
         }
     },
@@ -27,8 +36,22 @@ export const actions = {
     async logout ({ commit }) {
         const res = await axios.put('/api/authentication/logout')
         if (res.status === 200) {
+            commit("setUserId", null)
             commit('setUser', null)
+            this.$router.push('/login')
         }
+    },
+
+    async retrieveUser ({state, commit}) {
+        if (state.user === undefined || state.user === {} || state.user === null) {
+            let str = 'api/users/' + getUserFromCookie()
+            const res = await axios.get(str)
+            if (res.status === 200) {
+                let data = res.data;
+                commit('setUser', data)
+            }
+        }
+        return state.user
     }
 }
 
@@ -37,7 +60,7 @@ export const actions = {
 // authenticated, but this cookie is made accessible to the browser's
 // JavaScript.
 function getUserFromCookie () {
-    const re = new RegExp("user=([^;]+)") 
+    const re = new RegExp("user=%22([^;]+)%22") 
     const value = re.exec(document.cookie)
     return value != null ? unescape(value[1]) : null
 }

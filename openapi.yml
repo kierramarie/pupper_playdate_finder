@@ -25,13 +25,12 @@ paths:
                   type: string
                 parentBirthday: 
                   type: string
-                  format: date-time
+                petBirthday: 
+                  type: string
                 petName: 
                   type: string
                 bio:
                   type: string
-                location:
-                  type: string 
                 username: 
                   type: string
                 password:
@@ -43,12 +42,16 @@ paths:
                   type: array
                   items:
                     type: string
+                city:
+                  type: string
+                state: 
+                  type: string
             example:
               parentName: Sarah Miller
-              parentBirthday: 1995-01-01
+              parentBirthday: "1995-01-01"
+              petBirthday: "2020-06-01"
               petName: Luna
-              bio: a cute dog looking for fun friends
-              location: Los Angeles, CA, USA  
+              bio: a cute dog looking for fun friends 
               username: sarahm098
               password: password123
               email: sarahm@gmail.com  
@@ -56,6 +59,8 @@ paths:
                 - cute
                 - collie
                 - energetic
+              city: Los Angeles
+              state: California
       responses:
         201:
           description: User created.
@@ -92,12 +97,11 @@ paths:
                   type: string
                 parentBirthday: 
                   type: string
-                  format: date-time
+                petBirthday: 
+                  type: string
                 petName: 
                   type: string
                 bio:
-                  type: string
-                location:
                   type: string 
                 username: 
                   type: string
@@ -110,6 +114,10 @@ paths:
                   type: array
                   items:
                     type: string
+                city:
+                  type: string
+                state: 
+                  type: string
       responses:
         200:
           description: Successfully updated.
@@ -129,6 +137,24 @@ paths:
           description: Not authenticated.
         403:
           description: Access denied.
+    get:
+      x-operation: getUser
+      tags:
+        - Users
+      #security: 
+        #- cookieAuth: []
+      summary: get a users
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
   /users/{userId}/pics:
     x-controller: users
     parameters:
@@ -172,9 +198,40 @@ paths:
           description: Not authenticated.
         403:
           description: Access denied.
+  /users/getNearby:
+    x-controller: users
+    post:
+      x-operation: getNearbyUsers
+      tags:
+        - Users
+      #security: 
+        #- cookieAuth: []
+      summary: get all nearby users
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location: 
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/User'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
   /authentication/login:
     x-controller: authentication
-    put:
+    post:
       x-operation: login
       tags:
         - Authentication
@@ -200,6 +257,10 @@ paths:
       responses:
         200:
           description: Authenticated.
+          #content:
+            #application/json:
+              #schema: 
+                  #$ref: '#/components/schemas/User'
         400:
           description: Invalid request.
         403:
@@ -373,26 +434,39 @@ components:
           readOnly: true
         parentName: 
           type: string
+          nullable: true
         parentBirthday: 
           type: string
-          format: date-time
+          nullable: true
+        petBirthday: 
+          type: string
+          nullable: true
         petName: 
           type: string
+          nullable: true
         bio:
           type: string
-        location:
-          type: string 
+          nullable: true
         username: 
           type: string
         password:
           type: string
           format: password
+          nullable: true
         email: 
           type: string
+          nullable: true
         tags: 
           type: array
           items:
             type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        state: 
+          type: string
+          nullable: true
     Message:
       type: object 
       properties: 

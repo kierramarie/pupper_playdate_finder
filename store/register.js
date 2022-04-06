@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const state = () => {
     return {
         username: "",
@@ -7,15 +9,20 @@ export const state = () => {
         petName: "",
         parentBirthday: "",
         petBirthday: "",
-        location: "",
         bio: "",
-        tags: []
+        tags: [],
+        city: "",
+        valtio: ""
     }
 }
 
 export const getters = {
     getTags (state) {
-        return state.tags.sort();
+        return state.tags;
+    },
+
+    getLocation (state) {
+        return state.city + ", " + state.valtio
     }
 }
 
@@ -37,54 +44,78 @@ export const mutations = {
     },
 
     setPetName (state, newPetName) {
-        state.parentName = newPetName;
+        state.petName = newPetName;
     },
 
     setParentBirthday (state, newParentBirthday) {
-        state.parentName = newParentBirthday;
+        state.parentBirthday = newParentBirthday;
     },
 
     setPetBirthday (state, newPetBirthday) {
-        state.parentName = newPetBirthday;
+        state.petBirthday = newPetBirthday;
     },
 
-    setLocation (state, newLocation) {
-        state.parentName = newLocation;
+    setCity (state, newCity) {
+        state.city = newCity;
+    },
+
+    setState(state, newValtio) {
+        state.valtio = newValtio;
     },
 
     setBio (state, newBio) {
-        state.parentName = newBio;
+        state.bio = newBio;
     },
 
     setTags (state, newTags) {
-        state.parentName = newTags;
+        state.tags = newTags;
     },
     
     addTag (state, newTag) {
         state.tags.push(newTag);
+        state.tags.sort();
     }
 
 }
 
 export const actions = {
-    async register ({ commit, state }) {
-        const res = await axios.post('/api/users', {
-            username: state.username,
-            password: state.password,
-            email: state.email,
-            parentName: state.parentName,
-            petName: state.petName,
-            parentBirthday: state.parentBirthday,
-            petBirthday: state.petBirthday,
-            location: state.location,
-            bio: state.bio,
-            tags: state.getters.getTags 
-        })
-        if (res.status === 200) {
-            this.$store.dispatch('users/login', {
-                username: this.state.username,
-                password: this.state.password
-          })
+    async register ({ dispatch, state, commit }) {
+        let data = {}
+        if (state.tags.length === 0) {
+            data = {
+                username: state.username,
+                password: state.password,
+                email: state.email,
+                parentName: state.parentName,
+                petName: state.petName,
+                parentBirthday: state.parentBirthday,
+                petBirthday: state.petBirthday,
+                bio: state.bio,
+                city: state.city, 
+                state: state.valtio
+            }
+        }
+        else {
+            data = {
+                username: state.username,
+                password: state.password,
+                email: state.email,
+                parentName: state.parentName,
+                petName: state.petName,
+                parentBirthday: state.parentBirthday,
+                petBirthday: state.petBirthday,
+                bio: state.bio,
+                tags: state.tags,
+                city: state.city, 
+                state: state.valtio
+            }
+        }
+        const res = await axios.post('/api/users', data)
+        if (res.status === 201) {
+            dispatch('users/login', { 
+                username: state.username, 
+                password: state.password
+            }, {root:true})
         }
     }
 }

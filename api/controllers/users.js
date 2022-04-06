@@ -3,8 +3,8 @@ const users = require('../database/users')
 module.exports = function (pool) {
 	return {
 		async createUser (req, res) {
-			const { username, password, parentName, petName, parentBirthday, petBirthday, bio, email, location, tags } = req.enforcer.body
-			const userId = await users.createUser(pool, username, password, parentName, petName, parentBirthday, petBirthday, bio, email, location, tags)
+			const { username, password, parentName, petName, parentBirthday, petBirthday, bio, email, tags, city, state } = req.enforcer.body
+			const userId = await users.createUser(pool, username, password, parentName, petName, parentBirthday, petBirthday, bio, email, tags, city, state)
 			if (userId) {
 				res.set('location', '/api/users/' + userId)
 					.enforcer
@@ -62,20 +62,34 @@ module.exports = function (pool) {
 			}
 		},
 
-		async login (req, res) {
-
+		async getNearbyUsers (req, res) {
+			const { userId, city, state } = req.enforcer.body
+			let returnedUsers = await users.getNearbyUsers(pool, city, state, userId)
+			if (returnedUsers === undefined) {
+				res.enforcer.status(400).send()
+			}
+			else {
+				res.enforcer.status(200).send(returnedUsers)
+			}
 		},
 
-		async logout (req, res) {
-
+		async getUser(req, res) {
+			const {userId} = req.enforcer.params
+			let returnedUser = await users.getUser(pool, userId)
+			if (returnedUser === undefined) {
+				res.enforcer.status(400).send()
+			}
+			else {
+				res.enforcer.status(200).send(returnedUser)
+			}
 		},
 
 		async uploadPicture (req, res) {
 
 		},
 
-		async deletePicture(req, res) {
+		async deletePicture (req, res) {
 
-		}	
+		}
 	}
 }
