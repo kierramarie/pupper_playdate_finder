@@ -84,36 +84,16 @@ paths:
         content:
           application/json:
             schema:
-              type: object  
-              required: 
-                - username
-                - password
-                - email
+              type: object 
               properties: 
-                userId:
-                  type: string
-                  readOnly: true
                 parentName: 
-                  type: string
-                parentBirthday: 
-                  type: string
-                petBirthday: 
                   type: string
                 petName: 
                   type: string
                 bio:
                   type: string 
-                username: 
-                  type: string
-                password:
-                  type: string
-                  format: password
                 email: 
                   type: string
-                tags: 
-                  type: array
-                  items:
-                    type: string
                 city:
                   type: string
                 state: 
@@ -229,6 +209,67 @@ paths:
           description: Invalid request.
         401:
           description: Not authenticated.
+  /liked/likeUser:
+    x-controller: liked
+    post:
+      x-operation: likeUser
+      tags:
+        - Liked
+      #security: 
+        #- cookieAuth: []
+      summary: allow a user to like another
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id: 
+                  type: string
+                liked_user_id: 
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  matched: 
+                    type: boolean
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+  /liked/dislikeUser:
+    x-controller: liked
+    post:
+      x-operation: dislikeUser
+      tags:
+        - Liked
+      #security: 
+        #- cookieAuth: []
+      summary: allow a user to dislike another
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id: 
+                  type: string
+                disliked_user_id: 
+                  type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
   /authentication/login:
     x-controller: authentication
     post:
@@ -278,7 +319,9 @@ paths:
         403:
           description: Access denied.
   /chats:
+    x-controller: chats
     post:
+      x-operation: createChat
       tags:
         - Chats
       security:
@@ -301,14 +344,75 @@ paths:
           description: Invalid request.
         401:
           description: Not authenticated.
+  /chats/getUserChats:
+    x-controller: chats
+    post:
+      x-operation: getUserChats
+      tags:
+        - Chats
+      #security:
+        #- cookieAuth: []
+      summary: get a users chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id: 
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                nullable: true
+                items:
+                  type: object
+                  properties: 
+                    chat_id: 
+                      type: string
+                    user_id1: 
+                      type: string
+                    user_id2: 
+                      type: string
+                    user1_messages: 
+                      type: array
+                      nullable: true
+                      items:
+                        type: object
+                        properties:
+                          message: 
+                            type: string
+                    user2_messages: 
+                      type: array
+                      nullable: true
+                      items:
+                        type: object
+                        properties:
+                          message: 
+                            type: string
+                    user1_name: 
+                      type: string
+                    user2_name: 
+                      type: string
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
   /chats/{chat_id}:
+    x-controller: chats
     parameters:
       - $ref: '#/components/parameters/PathChatId'
     get:
+      x-operation: getChat
       tags:
         - Chats
-      security:
-        - cookieAuth: []
+      #security:
+        #- cookieAuth: []
       summary: get a specific chat
       responses:
         200:
@@ -316,12 +420,40 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Chat'
+                type: object
+                properties: 
+                  chat_id: 
+                    type: string
+                  user_id1: 
+                    type: string
+                  user_id2: 
+                    type: string
+                  user1_messages: 
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      properties:
+                        message: 
+                          type: string
+                  user2_messages: 
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      properties:
+                        message: 
+                          type: string
+                  user1_name: 
+                    type: string
+                  user2_name: 
+                    type: string
         400:
           description: Invalid request.
         401:
           description: Not authenticated.
     put:
+      x-operation: updateChat
       tags:
         - Chats
       security:
@@ -332,7 +464,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Chat'
+              type: object 
+              properties: 
+                user1_messages: 
+                  type: array
+                  nullable: true
+                  items: 
+                    type: string
+                user2_messages: 
+                  type: array
+                  nullable: true
+                  items: 
+                      type: string
       responses:
         200:
           description: Success.
@@ -341,6 +484,7 @@ paths:
         401:
           description: Not authenticated.
     delete:
+      x-operation: deleteChat
       tags:
         - Chats
       security:
@@ -354,16 +498,39 @@ paths:
         403:
           description: Access denied.
   /chats/{chat_id}/send:
+    x-controller: chats
     parameters:
       - $ref: '#/components/parameters/PathChatId'
     put:
+      x-operation: sendMessage
       tags:
         - Chats
-      security:
-        - cookieAuth: []
+      #security:
+        #- cookieAuth: []
       summary: send a message
       requestBody:
-        $ref: '#/components/requestBodies/SendMessage'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              properties: 
+                user1_messages: 
+                  type: array
+                  nullable: true
+                  items: 
+                    type: object
+                    properties: 
+                      message: 
+                        type: string
+                user2_messages: 
+                  type: array
+                  nullable: true
+                  items: 
+                    type: object
+                    properties: 
+                      message: 
+                        type: string
       responses:
         200:
           description: Success.
@@ -403,7 +570,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Message'
+            type: object
+            properties:
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+              user_id:
+                type: string
+              num: 
+                type: integer
     UploadPicture:
       required: true
       content:
@@ -486,7 +662,21 @@ components:
         chatId:
           type: string
           readOnly: true
-        messages: 
-          type: array 
-          items: 
-            $ref: '#/components/schemas/Message'
+        user_id1:
+          type: string
+          readOnly: true
+        user_id2:
+          type: string
+          readOnly: true
+        user1_name:
+          type: string
+          readOnly: true
+        user2_name:
+          type: string
+          readOnly: true
+        user1_messages: 
+          type: string
+          nullable: true
+        user2_messages: 
+          type: string
+          nullable: true

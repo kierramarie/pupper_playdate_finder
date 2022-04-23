@@ -10,17 +10,12 @@ export const state = () => {
         parentBirthday: "",
         petBirthday: "",
         bio: "",
-        tags: [],
         city: "",
         valtio: ""
     }
 }
 
 export const getters = {
-    getTags (state) {
-        return state.tags;
-    },
-
     getLocation (state) {
         return state.city + ", " + state.valtio
     }
@@ -65,50 +60,24 @@ export const mutations = {
 
     setBio (state, newBio) {
         state.bio = newBio;
-    },
-
-    setTags (state, newTags) {
-        state.tags = newTags;
-    },
-    
-    addTag (state, newTag) {
-        state.tags.push(newTag);
-        state.tags.sort();
     }
 
 }
 
 export const actions = {
-    async register ({ dispatch, state, commit }) {
+    async register ({ dispatch, state }) {
         let data = {}
-        if (state.tags.length === 0) {
-            data = {
-                username: state.username,
-                password: state.password,
-                email: state.email,
-                parentName: state.parentName,
-                petName: state.petName,
-                parentBirthday: state.parentBirthday,
-                petBirthday: state.petBirthday,
-                bio: state.bio,
-                city: state.city, 
-                state: state.valtio
-            }
-        }
-        else {
-            data = {
-                username: state.username,
-                password: state.password,
-                email: state.email,
-                parentName: state.parentName,
-                petName: state.petName,
-                parentBirthday: state.parentBirthday,
-                petBirthday: state.petBirthday,
-                bio: state.bio,
-                tags: state.tags,
-                city: state.city, 
-                state: state.valtio
-            }
+        data = {
+            username: state.username,
+            password: state.password,
+            email: state.email,
+            parentName: state.parentName,
+            petName: state.petName,
+            parentBirthday: state.parentBirthday,
+            petBirthday: state.petBirthday,
+            bio: state.bio,
+            city: state.city, 
+            state: state.valtio
         }
         const res = await axios.post('/api/users', data)
         if (res.status === 201) {
@@ -116,6 +85,20 @@ export const actions = {
                 username: state.username, 
                 password: state.password
             }, {root:true})
+            dispatch('reset')
         }
+    },
+
+    reset ({commit}) {
+        commit('setUsername',"")
+        commit('setPassword',"")
+        commit('setEmail',"")
+        commit('setParentName',"")
+        commit('setPetName',"")
+        commit('setParentBirthday',"")
+        commit('setPetBirthday',"")
+        commit('setBio',"")
+        commit('setCity',"")
+        commit('setState',"")
     }
 }

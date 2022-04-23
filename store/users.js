@@ -28,16 +28,19 @@ export const actions = {
         })
         if (res.status === 200) {
             const u = await dispatch('retrieveUser')
+            commit('setUser', u)
             commit('setUserId', getUserFromCookie())
             this.$router.push('/')
         }
     },
 
-    async logout ({ commit }) {
+    async logout ({ commit, dispatch }) {
         const res = await axios.put('/api/authentication/logout')
         if (res.status === 200) {
             commit("setUserId", null)
             commit('setUser', null)
+            dispatch('chats/reset')
+            dispatch('register/reset')
             this.$router.push('/login')
         }
     },
@@ -46,7 +49,7 @@ export const actions = {
         if (state.user === undefined || state.user === {} || state.user === null) {
             let str = 'api/users/' + getUserFromCookie()
             const res = await axios.get(str)
-            if (res.status === 200) {
+            if (res.status === 200 || res.status === 304) {
                 let data = res.data;
                 commit('setUser', data)
             }

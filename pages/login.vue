@@ -12,8 +12,8 @@
         label="Password"
         type="password"
       ></v-text-field>
-      <v-btn color="success" class="mr-4" @click="login"> Submit </v-btn>
-      <v-btn class="mr-4" @click="register">Register</v-btn>
+      <v-btn color="secondary" class="mr-4" @click="login"> Submit </v-btn>
+      <v-btn color="accent_secondary" class="mr-4" @click="register">Register</v-btn>
     </v-form>
   </v-card>
 </template>

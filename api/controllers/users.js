@@ -1,10 +1,11 @@
 const users = require('../database/users')
+const liked = require('../database/liked')
 
 module.exports = function (pool) {
 	return {
 		async createUser (req, res) {
-			const { username, password, parentName, petName, parentBirthday, petBirthday, bio, email, tags, city, state } = req.enforcer.body
-			const userId = await users.createUser(pool, username, password, parentName, petName, parentBirthday, petBirthday, bio, email, tags, city, state)
+			const { username, password, parentName, petName, parentBirthday, petBirthday, bio, email, city, state } = req.enforcer.body
+			const userId = await users.createUser(pool, username, password, parentName, petName, parentBirthday, petBirthday, bio, email, city, state)
 			if (userId) {
 				res.set('location', '/api/users/' + userId)
 					.enforcer
@@ -41,25 +42,14 @@ module.exports = function (pool) {
 		},
 
 		async deleteUser (req, res) {
-			const { username } = req.enforcer.params
-			try {
-				await client.query('BEGIN')
-				let user = await users.getUserByUsername(client, username)
-				if (user === undefined) {
-					res.enforcer.status(204).send()
-				} else if (user.user_id !== req.user.id) {
-					res.enforcer.status(403).send()
-				} else {
-					await users.deleteUser(pool, user.id)
-					res.enforcer.status(200).send()
-				}
-				await client.query('COMMIT')
-			} catch (e) {
-				await client.query('ROLLBACK')
-				throw e
-			} finally {
-				client.release()
-			}
+			const {user_id} = req.enforcer.params
+            let success = await users.deleteUser(pool, user_id)
+            if (success === 1) {
+                res.enforcer.status(204).send()
+            }
+            else {
+                res.enforcer.status(500).send()
+            }
 		},
 
 		async getNearbyUsers (req, res) {
@@ -69,6 +59,10 @@ module.exports = function (pool) {
 				res.enforcer.status(400).send()
 			}
 			else {
+				const result = await liked.alreadySeen(pool, userId)
+				result.forEach(like => {
+					returnedUsers = returnedUsers.filter(other => other.user_id != like.liked_user_id)
+				});
 				res.enforcer.status(200).send(returnedUsers)
 			}
 		},

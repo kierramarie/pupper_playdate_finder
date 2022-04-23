@@ -7,6 +7,8 @@ const { Pool } = require('pg')
 const path = require('path')
 const Users = require('./controllers/users')
 const Authentication = require('./controllers/authentication')
+const Liked = require('./controllers/liked')
+const Chats = require('./controllers/chats')
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
@@ -43,7 +45,7 @@ passport.use(new LocalStrategy((username, password, done) => {
 				const match = await bcrypt.compare(password, user.password)
 				if (match) {
 					// passwords matched, so create the user object
-					done(null, { id: user.user_id, username: user.username, parentName: user.parent_name, petName: user.pet_name, parent_birthday: user.parent_birthday, petBirthday: user.pet_birthday, bio: user.bio, email: user.email, location: user.location, tags: user.tags  })
+					done(null, { id: user.user_id, username: user.username, parentName: user.parent_name, petName: user.pet_name, parent_birthday: user.parent_birthday, petBirthday: user.pet_birthday, bio: user.bio, email: user.email, city: user.city, state: user.state, tags: user.tags, chats: user.chats  })
 				} else {
 					const hash = await bcrypt.hash(password, 10)
 					const m2 = await bcrypt.compare(password, hash)
@@ -109,6 +111,8 @@ app.use((req, res, next) => {
 
 app.use(enforcerMiddleware.route({
 	users: Users(pool),
+	liked: Liked(pool),
+	chats: Chats(pool),
 	authentication: Authentication(passport, pool)
 }))
 

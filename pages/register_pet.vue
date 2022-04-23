@@ -39,19 +39,9 @@
       <v-textarea
         v-model="form.bio"
         label="Bio"
-        background-color="#272727"
       ></v-textarea>
-      <div class="d-flex align-center">
-        <v-text-field v-model="form.currentTag" label="Tag" style="padding-right:20px;"></v-text-field>
-        <v-btn @click="addTag">Add</v-btn>
-      </div>
-      <ul id="example-1" style="padding-bottom:20px;">
-        <li v-for="tag in form.tags" :key="tag">
-          {{ tag }}
-        </li>
-      </ul>
       <v-btn class="mr-4" @click="back"> Back </v-btn>
-      <v-btn color="success" class="mr-4" @click="validate"> Register </v-btn>
+      <v-btn color="secondary" class="mr-4" @click="validate"> Register </v-btn>
     </v-form>
   </v-card>
 </template>
@@ -64,9 +54,7 @@ export default {
       form: {
         petName: "",
         petBirthday: "",
-        bio: "",
-        tags: [],
-        currentTag: "",
+        bio: ""
       },
       activePicker: null,
       menu: false,
@@ -81,7 +69,6 @@ export default {
     this.form.petName = this.getPetName();
     this.form.petBirthday = this.getPetBirthday();
     this.form.bio = this.getBio();
-    this.form.tags = this.getTags();
   },
   methods: {
     validate() {
@@ -90,12 +77,6 @@ export default {
       this.$store.commit("register/setPetBirthday", this.form.petBirthday);
       this.$store.commit("register/setBio", this.form.bio);
       this.$store.dispatch("register/register");
-    },
-
-    addTag() {
-      this.$store.commit("register/addTag", this.form.currentTag);
-      this.form.currentTag = "";
-      this.form.tags = this.getTags();
     },
 
     back() {
@@ -112,10 +93,6 @@ export default {
 
     getBio() {
       return this.$store.state.register.bio;
-    },
-
-    getTags() {
-      return this.$store.state.register.tags;
     },
 
     save(date) {

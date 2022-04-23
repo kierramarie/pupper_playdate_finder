@@ -1,12 +1,12 @@
 const bcrypt = require('bcryptjs')
 const uuid = require('uuid').v4
 
-exports.createUser = async function (client, username, password, parentName, petName, parentBirthday, petBirthday, bio, email, tags, city, state) {
+exports.createUser = async function (client, username, password, parentName, petName, parentBirthday, petBirthday, bio, email, tags, city, state, chats) {
     const userId = uuid()
     const salt = await bcrypt.genSalt(10)
     const { rowCount } = await client.query({
         name: 'create-user',
-        text: 'INSERT INTO users (user_id, username, password, parent_name, pet_name, parent_birthday, pet_birthday, bio, email, tags, city, state) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT DO NOTHING',
+        text: 'INSERT INTO users (user_id, username, password, parent_name, pet_name, parent_birthday, pet_birthday, bio, email, city, state, chats) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT DO NOTHING',
         values: [
             userId,
             username,
@@ -16,10 +16,10 @@ exports.createUser = async function (client, username, password, parentName, pet
             parentBirthday, 
             petBirthday, 
             bio, 
-            email,  
-            tags,
+            email,
             city,
-            state
+            state, 
+            JSON.stringify(chats)
         ]
     })
     return rowCount > 0 ? userId : undefined
@@ -70,30 +70,34 @@ exports.getUserByUsername = async function (client, username) {
     return rows[0]
 }
 
+exports.deleteUser = async function (client, userId) {
+    const { rowCount } = await client.query({
+        name: 'delete-user',
+        text: 'DELETE FROM users WHERE user_id=$1',
+        values: [userId]
+    })
+    return rowCount
+}
+
 exports.updateUser = async  function (client, userId, data) {
     // create dynamic query based on inputs
-    const { username, password, parentName, petName, bio, email, city, state} = data
+    const { password, parent_name, pet_name, bio, email, city, state, chats} = data
     const values = []
     const sets = []
     const salt = await bcrypt.genSalt(10)
-
-    if (username !== undefined) {
-        values.push(username)
-        sets.push('username=$' + values.length)
-    }
 
     if (password !== undefined) {
         values.push(await bcrypt.hash(password, salt))
         sets.push('password=$' + values.length)
     }
 
-    if (parentName !== undefined) {
-        values.push(parentName)
+    if (parent_name !== undefined) {
+        values.push(parent_name)
         sets.push('parent_name=$' + values.length)
     }
 
-    if (petName !== undefined) {
-        values.push(petName)
+    if (pet_name !== undefined) {
+        values.push(pet_name)
         sets.push('pet_name=$' + values.length)
     }
 
@@ -108,13 +112,18 @@ exports.updateUser = async  function (client, userId, data) {
     }
 
     if (city !== undefined) {
-        values.push(location)
+        values.push(city)
         sets.push('city=$' + values.length)
     }
 
     if (state !== undefined) {
         values.push(state)
         sets.push('state=$' + values.length)
+    }
+
+    if (chats !== undefined) {
+        values.push(JSON.stringify(chats))
+        sets.push('chats=$' + values.length)
     }
 
     // if no properties were passed in then there is nothing to update
